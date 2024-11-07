@@ -24,6 +24,7 @@ This guide provides detailed instructions on using the GoodKey desktop client fo
       - [Adding the PKCS#11 Provider](#adding-the-pkcs11-provider)
       - [Signing a Document](#signing-a-document)
     - [Using `pkcs11-tool`](#using-pkcs11-tool)
+      - [Installing `pkcs11-tool`](#installing-pkcs11-tool)
       - [Listing Objects on the Device](#listing-objects-on-the-device)
       - [Listing Supported Mechanisms](#listing-supported-mechanisms)
       - [Signing and Verifying Data](#signing-and-verifying-data)
@@ -230,7 +231,11 @@ Adobe Acrobat Reader can utilize the GoodKey PKCS#11 module to digitally sign PD
 
 ### Using `pkcs11-tool`
 
-The `pkcs11-tool` utility allows command-line interaction with PKCS#11 modules for various cryptographic operations.
+The `pkcs11-tool` utility, which is part of the OpenSC project, allows command-line interaction with PKCS#11 modules for various cryptographic operations.
+
+#### Installing `pkcs11-tool`
+
+To install `pkcs11-tool`, download the latest release from the [OpenSC GitHub releases page](https://github.com/opensc/opensc/releases) and follow the installation instructions for your operating system.
 
 #### Listing Objects on the Device
 
