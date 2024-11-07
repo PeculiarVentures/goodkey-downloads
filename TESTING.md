@@ -245,6 +245,8 @@ To display all objects (keys, certificates) on the GoodKey PKCS#11 module:
 pkcs11-tool --module /usr/local/lib/gkp11.so -O
 ```
 
+This command will list all keys and certificates available on the device. Make sure to copy the ID of the private key you intend to use for signing operations.
+
 #### Listing Supported Mechanisms
 
 To list all cryptographic mechanisms supported by the GoodKey PKCS#11 module:
@@ -254,6 +256,14 @@ pkcs11-tool --module /usr/local/lib/gkp11.so -M
 ```
 
 #### Signing and Verifying Data
+
+Use the key ID obtained from the list of objects for signing and verifying data. You can get the key ID by listing the objects on the device using the `pkcs11-tool` command.
+
+To sign data, you need a test file with the data you want to sign. You can use your own file or create a new one. For example, you can create a new file with sample data using the `echo` command:
+
+```bash
+echo "Sample data to be signed" > data.txt
+```
 
 ##### RSA Algorithm
 
