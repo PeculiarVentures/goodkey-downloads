@@ -54,6 +54,8 @@ To begin using the GoodKey desktop client, download the latest version from the 
 - **Windows:** You may receive a warning from SmartScreen. Click **More info** and then **Run anyway**.
 - **macOS:** You might see a message stating the app can't be opened because it is from an unidentified developer. Go to **System Preferences** > **Security & Privacy** > **General**, and click **Open Anyway**.
 
+**Important:** When installing or updating the GoodKey application, it is recommended to close any applications that interact with it, such as Adobe Acrobat, Fortify, and others, to avoid potential conflicts.
+
 ## Setting Up the GoodKey Client
 
 The GoodKey client allows users to manage cryptographic keys and certificates associated with their GoodKey account. Before integrating it with applications, ensure that the client is properly installed and authenticated.
