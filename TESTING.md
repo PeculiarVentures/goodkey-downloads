@@ -11,6 +11,9 @@ This guide provides detailed instructions on using the GoodKey desktop client fo
   - [Table of Contents](#table-of-contents)
   - [Downloading and Installing the GoodKey Client](#downloading-and-installing-the-goodkey-client)
     - [Allowing Installation of an Untrusted Application](#allowing-installation-of-an-untrusted-application)
+  - [Configuring Server Environment](#configuring-server-environment)
+    - [Setting the Environment Variable on Windows](#setting-the-environment-variable-on-windows)
+    - [Setting the Environment Variable on macOS](#setting-the-environment-variable-on-macos)
   - [Setting Up the GoodKey Client](#setting-up-the-goodkey-client)
     - [Checking Authentication Status](#checking-authentication-status)
     - [Registering the Client via Browser](#registering-the-client-via-browser)
@@ -33,10 +36,12 @@ This guide provides detailed instructions on using the GoodKey desktop client fo
     - [Fortify](#fortify)
   - [Windows Integration](#windows-integration)
     - [`signtool`](#signtool)
+      - [Downloading the Windows SDK](#downloading-the-windows-sdk)
       - [Listing Certificates in the My Store](#listing-certificates-in-the-my-store)
       - [Obtaining a valid Code Signing Certificate](#obtaining-a-valid-code-signing-certificate)
       - [Signing Files with `signtool`](#signing-files-with-signtool)
         - [Adding `signtool` to the PATH Environment Variable](#adding-signtool-to-the-path-environment-variable)
+        - [Creating a Demo File for Signing](#creating-a-demo-file-for-signing)
         - [Signing an Executable File](#signing-an-executable-file)
         - [Verifying a Signature](#verifying-a-signature)
   - [Conclusion](#conclusion)
@@ -55,6 +60,60 @@ To begin using the GoodKey desktop client, download the latest version from the 
 - **macOS:** You might see a message stating the app can't be opened because it is from an unidentified developer. Go to **System Preferences** > **Security & Privacy** > **General**, and click **Open Anyway**.
 
 **Important:** When installing or updating the GoodKey application, it is recommended to close any applications that interact with it, such as Adobe Acrobat, Fortify, and others, to avoid potential conflicts.
+
+### Configuring Server Environment
+
+The GoodKey application supports working with different servers. By default, it operates with the production server. To use the canary server, you need to set a global environment variable `GOODKEY_ENV` with the value `canary`.
+
+#### Setting the Environment Variable on Windows
+
+1. **Open the System Properties:**
+
+   - Press `Win + Pause/Break` or right-click on `This PC` and select `Properties`.
+   - Click on `Advanced system settings`.
+
+2. **Open Environment Variables:**
+
+   - In the System Properties window, click on the `Environment Variables` button.
+
+3. **Add a New System Variable:**
+
+   - In the Environment Variables window, click `New` under the `System variables` section.
+   - Enter `GOODKEY_ENV` as the variable name and `canary` as the variable value.
+   - Click `OK` to save the new variable.
+
+4. **Restart Your Computer:**
+   - For the changes to take effect, restart your computer.
+
+#### Setting the Environment Variable on macOS
+
+1. **Open Terminal:**
+
+   - Open the Terminal application from the Applications folder or by searching for it in Spotlight.
+
+2. **Edit the Shell Profile:**
+
+   - Depending on your shell, you need to edit the appropriate profile file. For `bash`, edit `~/.bash_profile`, and for `zsh`, edit `~/.zshrc`.
+   - Use a text editor to open the file. For example, to edit with `nano`, run:
+     ```bash
+     nano ~/.zshrc
+     ```
+
+3. **Add the Environment Variable:**
+
+   - Add the following line to the file:
+     ```bash
+     export GOODKEY_CANARY=canary
+     ```
+   - Save the file and exit the editor.
+
+4. **Apply the Changes:**
+   - To apply the changes, either restart your computer or run the following command in the terminal:
+     ```bash
+     source ~/.zshrc
+     ```
+
+**Note:** After setting the environment variable, it is important to restart your computer for the changes to take effect.
 
 ## Setting Up the GoodKey Client
 
@@ -364,9 +423,15 @@ Fortify is a cryptographic library that supports PKCS#11 modules. To configure F
 
 The `signtool` utility in Windows is used for signing code and verifying digital signatures. With GoodKey integrated into the My store and CNG (Cryptography Next Generation) provider, you can utilize it for signing operations seamlessly.
 
+#### Downloading the Windows SDK
+
+To use `signtool`, you need to have the Windows SDK installed. You can download the Windows SDK from the official Microsoft website:
+
+- [Windows SDK Downloads](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+
 #### Listing Certificates in the My Store
 
-To display all certificates available in the My store, including GoodKey certificates, use the following PowerShell command:
+To ensure that the GoodKey application is installed and configured correctly, you can list all certificates available in the My store, including those from the GoodKey server, using the following PowerShell command:
 
 ```powershell
 Get-ChildItem -Path Cert:\CurrentUser\My
@@ -377,7 +442,7 @@ Get-ChildItem -Path Cert:\CurrentUser\My
 ```powershell
 PS C:\Users\micro\github\pv\goodkey-service-app> Get-ChildItem -Path Cert:\CurrentUser\My
 
-   PSParentPath: Microsoft.PowerShell.Security\Certificate::CurrentUser\My
+  PSParentPath: Microsoft.PowerShell.Security\Certificate::CurrentUser\My
 
 Thumbprint                                Subject
 ----------                                -------
@@ -424,15 +489,37 @@ $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64"
 
 **Important:** If you run the signing command from the Visual Studio Developer Command Prompt, the utility may not detect certificates from the GoodKey provider.
 
+##### Creating a Demo File for Signing
+
+To create a demo file named `data.ps1` for signing, follow these steps:
+
+1. **Open a Text Editor:**
+
+- You can use any text editor, such as Notepad on Windows or nano on macOS/Linux.
+
+2. **Create the File:**
+
+- Add the following content to the file:
+  ```powershell
+  # Sample PowerShell script
+  Write-Output "This is a sample script for signing."
+  ```
+
+3. **Save the File:**
+
+- Save the file with the name `data.ps1`.
+
+Now you have a demo file `data.ps1` that you can use for signing with `signtool`.
+
 ##### Signing an Executable File
 
 Use the following command to sign an executable file:
 
 ```cmd
-signtool sign /sha1 <Thumbprint> /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /v .\data.ps1
+signtool sign /sha1 <SHA1_Thumbprint> /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /v .\data.ps1
 ```
 
-Replace `<Thumbprint>` with the thumbprint of your GoodKey certificate (e.g., `f8af4d207c1d3745b5db8bf390e3c6438614dc3e`). This command signs the file `data.ps1` with SHA-256 and adds a timestamp from the specified URL.
+Replace `<SHA1_Thumbprint>` with the SHA-1 thumbprint of your GoodKey certificate (e.g., `f8af4d207c1d3745b5db8bf390e3c6438614dc3e`). You can obtain the thumbprint from the [list of certificates in the terminal](#listing-certificates-in-the-my-store) or from the GoodKey website. This command signs the file `data.ps1` with SHA-256 and adds a timestamp from the specified URL.
 
 ##### Verifying a Signature
 
