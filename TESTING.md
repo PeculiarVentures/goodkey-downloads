@@ -103,7 +103,7 @@ The GoodKey application supports working with different servers. By default, it 
 
    - Add the following line to the file:
      ```bash
-     export GOODKEY_CANARY=canary
+     export GOODKEY_ENV=canary
      ```
    - Save the file and exit the editor.
 
